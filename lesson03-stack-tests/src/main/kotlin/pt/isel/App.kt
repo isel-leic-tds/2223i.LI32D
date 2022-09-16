@@ -7,7 +7,8 @@ fun main() {
     stk.push("LAE")
     println(stk.peek()) // TDS
     while( !stk.isEmpty() ) {
-        println( stk.pop() ) // TDS ISEL
+        println( stk.peek() ) // TDS ISEL
+        stk.pop()
     }
     stk.peek() // throws NoSuchElementException
 }

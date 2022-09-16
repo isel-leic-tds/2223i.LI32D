@@ -9,4 +9,4 @@
 
 rootProject.name = "tds-i32d"
 include("lesson01-calendar")
-include("lesson02-stack")
+include("lesson03-stack-tests")
