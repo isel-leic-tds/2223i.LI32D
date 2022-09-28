@@ -1,6 +1,7 @@
 package pt.isel
 
-import pt.isel.oop.Calculator
+import pt.isel.fp.CalculatorFp
+import pt.isel.oop.CalculatorOop
 import pt.isel.oop.IntLiteral
 import pt.isel.oop.IntOperator
 import pt.isel.oop.Operator
@@ -11,15 +12,20 @@ import kotlin.test.assertFailsWith
 
 class PrefixCalculatorTest {
 
-    @Test fun `eval complex prefix expression successfully`() {
-        val res = Calculator.parsePrefix("* / 1024 12 - 45 + 2 17")
+    @Test fun `eval complex prefix expression successfully with Oop`() {
+        val res = CalculatorOop.parsePrefix("* / 1024 12 - 45 + 2 17")
+        assertEquals( 1024 / 12 * (45 - (2 + 17)), res)
+        // assertEquals( 2210, res) // 2218
+    }
+    @Test fun `eval complex prefix expression successfully with FP`() {
+        val res = CalculatorFp.parsePrefix("* / 1024 12 - 45 + 2 17")
         assertEquals( 1024 / 12 * (45 - (2 + 17)), res)
         // assertEquals( 2210, res) // 2218
     }
 
     @Test fun `eval complex prefix expression with missing operands`() {
         assertFailsWith<IllegalStateException> {
-            Calculator.parsePrefix("* / 1024 12 - 45 + 2")
+            CalculatorOop.parsePrefix("* / 1024 12 - 45 + 2")
         }
     }
     @Test fun `eval Literal expression`() {

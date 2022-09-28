@@ -1,4 +1,4 @@
-package pt.isel.oop
+package pt.isel.fp
 
 import java.lang.IllegalArgumentException
 
@@ -6,12 +6,7 @@ enum class Operator(val opr: Char) {
     /**
      * There are ONLY 4 possible instances of Operator:
      */
-    SUM('+') { override fun calc(a: Int, b: Int) = a + b },
-    SUB('-') { override fun calc(a: Int, b: Int) = a - b },
-    DIV('/') { override fun calc(a: Int, b: Int) = a / b },
-    MUL('*') { override fun calc(a: Int, b: Int) = a * b },;
-
-    abstract fun calc(a: Int, b: Int) : Int;
+    SUM('+'), SUB('-'), DIV('/'), MUL('*');
 
     companion object {
         fun parse(c: Char): Operator {
@@ -19,5 +14,14 @@ enum class Operator(val opr: Char) {
                 .find { operator -> operator.opr == c }
                 ?: throw IllegalArgumentException("Invalid operator $c")
         }
+    }
+}
+
+fun Operator.calc(a: Int, b: Int): Int {
+    return when(this) {
+        Operator.SUM -> a + b
+        Operator.SUB -> a - b
+        Operator.DIV -> a / b
+        Operator.MUL -> a * b
     }
 }

@@ -1,6 +1,6 @@
 package pt.isel.oop
 
-object Calculator {
+object CalculatorOop {
     fun parsePrefix(input: String): Int {
         val tokens = input.split(" ").iterator()
         val root = parseTokens(tokens)
