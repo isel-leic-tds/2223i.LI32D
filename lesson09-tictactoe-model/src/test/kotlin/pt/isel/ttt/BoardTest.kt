@@ -29,7 +29,7 @@ class BoardTest {
             Board()
                 .play(Position(0,0), CROSS).play(Position(1,0), CIRCLE)
                 .play(Position(0,1), CROSS).play(Position(1,1), CIRCLE)
-                .play(Position(0,2), CROSS).play(Position(1,2), CIRCLE)
+                .play(Position(1,2), CROSS).play(Position(0,2), CIRCLE)
                 .play(Position(2,0), CROSS).play(Position(2,1), CIRCLE)
                 .play(Position(2,2), CROSS).play(Position(1,2), CIRCLE)
 
@@ -42,6 +42,31 @@ class BoardTest {
             Board(winner = CIRCLE)
                 .play(Position(0,0), CROSS)
 
+        }
+        assertEquals("The player CIRCLE won this game.", ex.message)
+    }
+        @Test fun `Check CIRCLE wins the game with a line`() {
+        val board = Board()
+            .play(Position(1,0), CROSS)
+            .play(Position(0,0), CIRCLE)
+            .play(Position(1,2), CROSS)
+            .play(Position(0,1), CIRCLE)
+            .play(Position(2,0), CROSS)
+            .play(Position(0,2), CIRCLE)
+        assertEquals(CIRCLE, board.winner)
+        val ex = assertFailsWith<IllegalStateException> {
+            board.play(Position(0,0), CIRCLE)
+        }
+        assertEquals("The player CIRCLE won this game.", ex.message)
+    }
+    @Test fun `Check CIRCLE wins the game with a backslash`() {
+        val board = Board()
+            .play(Position(1,0), CROSS) .play(Position(0,0), CIRCLE)
+            .play(Position(1,2), CROSS) .play(Position(1,1), CIRCLE)
+            .play(Position(2,0), CROSS) .play(Position(2,2), CIRCLE)
+        assertEquals(CIRCLE, board.winner)
+        val ex = assertFailsWith<IllegalStateException> {
+            board.play(Position(0,0), CIRCLE)
         }
         assertEquals("The player CIRCLE won this game.", ex.message)
     }
