@@ -46,9 +46,8 @@ class BoardTest {
 
     @Test fun `We cannot play on a bord that has a winner`() {
         val ex = assertFailsWith<IllegalStateException> {
-            BoardWinner(CIRCLE)
+            BoardWinner(emptyList(), CIRCLE)
                 .play(Position(0,0), CROSS)
-
         }
         assertEquals("The player CIRCLE won this game.", ex.message)
     }
