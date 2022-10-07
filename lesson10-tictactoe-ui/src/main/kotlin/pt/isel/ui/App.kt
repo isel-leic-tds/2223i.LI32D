@@ -6,7 +6,11 @@ import pt.isel.ttt.BoardWinner
 import pt.isel.ttt.Position
 
 fun main() {
-
+    readCommandsOop(mapOf(
+        "QUIT" to QuitCommandOop,
+        "START" to StartCommandOop,
+        "PLAY" to PlayCommandOop
+    ))
 }
 
 val sepLine = "\n"+"---+".repeat(BOARD_SIZE -1)+"---"
