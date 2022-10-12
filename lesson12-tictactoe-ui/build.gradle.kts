@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     implementation(project(":lesson09-tictactoe-model"))
-    implementation(project(":lesson11-ui-generic"))
+    implementation(project(":lesson12-ui-generic"))
 
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
