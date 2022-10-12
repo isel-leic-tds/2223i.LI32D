@@ -24,10 +24,13 @@ object StartCommandOop : CommandOop<Board> {
 object PlayCommandOop : CommandOop<Board> {
     override val syntax get() = "play <X|O> <lin> <col>"
     override fun show(board: Board) = printBoard(board)
-    override fun action(board: Board?, args: List<String>): Board? {
-        require(args.size == 3) { "Provide 3 arguments corresponding to player, line and column." }
-        val player = args[0].toPlayer()
-        val pos = Position(args[1].toInt(), args[2].toInt())
-        return board?.play(pos, player)
-    }
+    override fun action(board: Board?, args: List<String>) = tictactoePlay(board, args)
+}
+
+
+fun tictactoePlay(board: Board?, args: List<String>): Board? {
+    require(args.size == 3) { "Provide 3 arguments corresponding to player, line and column." }
+    val player = args[0].toPlayer()
+    val pos = Position(args[1].toInt(), args[2].toInt())
+    return board?.play(pos, player)
 }

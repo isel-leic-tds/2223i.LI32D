@@ -1,6 +1,20 @@
 package pt.isel.ui
 
 /**
+ * Using return with or without label in lambdas
+ */
+fun foo(ints: List<Int>): Boolean {
+    ints.filter { it % 2 != 0 }
+    ints.filter {
+        val isOdd = it % 2 != 0
+        // <=> isOdd // implicit return
+        return@filter isOdd
+        // return isOdd // !!!! Mismatch returning from foo and NOT lambda
+    }
+    return false
+}
+
+/**
  * n - formal parameter
  * T - type parameter
  */
