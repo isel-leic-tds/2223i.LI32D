@@ -21,6 +21,18 @@ class BoardWinner(moves: List<Move>, val winner: Player) : Board(moves) {
 }
 
 class BoardRun (moves: List<Move> = emptyList(), val lastPlayer: Player = Player.CIRCLE) : Board(moves) {
+    companion object {
+        fun deserialize(input: String) : BoardRun{
+            val moves = input
+                .split("\n")
+                .map { Move.deserialize(it) }
+            return BoardRun(moves)
+        }
+    }
+    fun serialize()  = moves
+        .map { it.serialize() }
+        .joinToString("\n")
+
     override fun play(pos: Position, player: Player) : Board {
         require(lastPlayer != player) {"Player $player cannot play twice!" }
         require(!moves.any { m -> m.pos == pos }) {"Position $pos occupied! Please play on an empty position."}
