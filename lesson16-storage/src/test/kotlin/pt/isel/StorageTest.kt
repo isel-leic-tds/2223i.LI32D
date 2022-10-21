@@ -1,6 +1,6 @@
 package pt.isel
 
-import pt.isel.ttt.BoardRun
+import pt.isel.ttt.*
 import java.io.File
 import kotlin.test.*
 
@@ -50,17 +50,24 @@ class StorageTest {
         assertEquals("Rua Rosa", obj.address)
     }
     @Test fun `Save a complex entity and load it`() {
-        val serializer = object : StringSerializer<BoardRun> {
-            override fun write(obj: BoardRun) = obj.serialize()
-            override fun parse(input: String) =  BoardRun.deserialize(input)
+        val serializer = object : StringSerializer<Board> {
+            override fun write(obj: Board) = obj.serialize()
+            override fun parse(input: String) =  Board.deserialize(input)
         }
-        val fs = FileStorage<Int, BoardRun>(testFolder, { _ -> BoardRun()}, serializer)
-        val board = fs.new(dummyId)
-        // fs.save(board.play())
-
-        val obj = fs.load(dummyId)
-        assertNotNull(obj)
-        // assertEquals(dummyId, obj.id)
-        // assertEquals("Rua Rosa", obj.address)
+        val fs = FileStorage<Int, Board>(testFolder, { BoardRun() }, serializer)
+        val board = fs
+            .new(dummyId)
+            .play(Position(1, 1), Player.CROSS)
+            .play(Position(2, 0), Player.CIRCLE)
+            .play(Position(1, 0), Player.CROSS)
+            .play(Position(2, 2), Player.CIRCLE)
+            .play(Position(1, 2), Player.CROSS)
+        fs.save(dummyId, board)
+        val actual = fs.load(dummyId)
+        assertNotNull(actual)
+        assertNotSame(board, actual)
+        assertIs<BoardWinner>(actual)
+        val iter = actual.moves.iterator()
+        board.moves.forEach { assertEquals(it, iter.next()) }
     }
 }

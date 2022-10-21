@@ -12,6 +12,10 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":lesson09-tictactoe-model"))
+    implementation(project(":lesson12-ui-generic"))
+    implementation(project(":lesson16-storage"))
+
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
 
@@ -24,11 +28,19 @@ dependencies {
 
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-    testImplementation(project(":lesson09-tictactoe-model"))
-
 }
 
 application {
     // Define the main class for the application.
     mainClass.set("pt.isel.ui.AppKt")
+}
+
+tasks.jar {
+    manifest.attributes["Main-Class"] = "pt.isel.ui.AppKt"
+    val dependencies = configurations
+        .runtimeClasspath
+        .get()
+        .map(::zipTree) // OR .map { zipTree(it) }
+    from(dependencies)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
