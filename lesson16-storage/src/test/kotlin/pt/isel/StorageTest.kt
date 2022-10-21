@@ -1,6 +1,5 @@
 package pt.isel
 
-import pt.isel.ttt.Board
 import pt.isel.ttt.BoardRun
 import java.io.File
 import kotlin.test.*
