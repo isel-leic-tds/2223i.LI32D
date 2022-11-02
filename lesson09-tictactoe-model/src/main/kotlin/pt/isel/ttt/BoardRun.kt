@@ -9,11 +9,12 @@ sealed class Board(val moves: List<Move>) {
         fun deserialize(input: String): Board {
             val lines = input.split("\n")
             val kind = lines[0]
-            val moves = lines.drop(1).map { Move.deserialize(it) }
+            val moves = lines.drop(1).filter { it.isNotEmpty() }.map { Move.deserialize(it) }
+            val lastPlayer = if(moves.isEmpty()) Player.CIRCLE else moves.last().player
             return when (kind) {
-                BoardRun::class.simpleName -> BoardRun(moves, moves.last().player)
+                BoardRun::class.simpleName -> BoardRun(moves, lastPlayer)
                 BoardDraw::class.simpleName -> BoardDraw(moves)
-                BoardWinner::class.simpleName -> BoardWinner(moves, moves.last().player)
+                BoardWinner::class.simpleName -> BoardWinner(moves, lastPlayer)
                 else -> { throw IllegalArgumentException("There is no board type for input $kind")}
             }
         }
