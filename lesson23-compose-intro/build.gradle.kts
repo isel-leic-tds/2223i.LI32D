@@ -1,9 +1,7 @@
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
-    id("org.jetbrains.kotlin.jvm") version "1.6.21"
-
-    // Apply the application plugin to add support for building a CLI application in Java.
-    application
+    id("org.jetbrains.kotlin.jvm") version "1.7.20"
+    id("org.jetbrains.compose") version "1.2.1"
 }
 
 repositories {
@@ -12,6 +10,8 @@ repositories {
 }
 
 dependencies {
+    implementation(compose.desktop.currentOs)
+
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
 
@@ -25,7 +25,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 }
 
-application {
-    // Define the main class for the application.
-    mainClass.set("pt.isel.AppKt")
+compose.desktop {
+    application {
+        mainClass = "pt.isel.AppKt"
+    }
 }
