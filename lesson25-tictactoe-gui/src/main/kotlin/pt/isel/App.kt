@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.window.*
 import pt.isel.ttt.*
+import kotlin.system.exitProcess
 
 fun main() = application {
     Window(
@@ -30,6 +31,13 @@ fun main() = application {
     ) {
         val board: MutableState<Board> = remember { mutableStateOf(BoardRun()) }
         val dialogMessage: MutableState<String?> = remember { mutableStateOf(null) }
+        /*
+         * Build Menu Bar
+         */
+        this.TicTacToeMenu() { board.value = BoardRun() }
+        /*
+         * Build window content
+         */
         BoardView(board.value) { pos ->
             val moves = board.value.moves
             val lastPlayer = if(moves.isEmpty()) Player.CIRCLE else moves.last().player
@@ -40,15 +48,32 @@ fun main() = application {
                 dialogMessage.value = ex.message
             }
         }
-        val msg = dialogMessage.value
-        if(msg != null)
-            Dialog(
-                onCloseRequest = { dialogMessage.value = null },
-                state = rememberDialogState(position = WindowPosition(Alignment.Center))
-            ) {
-                Text(msg)
-            }
+        DialogMessage(dialogMessage.value) { dialogMessage.value = null }
     }
+}
+
+@Composable
+fun FrameWindowScope.TicTacToeMenu(onNew: () -> Unit) {
+    MenuBar {
+        Menu("TicTacToe", mnemonic = 'T') {
+            Item("New", onClick = onNew)
+            Item("Exit", onClick = { exitProcess(0) })
+        }
+    }
+}
+
+@Composable
+fun DialogMessage(msg: String?, onClose: () -> Unit) {
+    if(msg != null)
+        Dialog(
+            onCloseRequest = onClose,
+            state = rememberDialogState(
+                position = WindowPosition(Alignment.Center),
+                size = DpSize.Unspecified
+            )
+        ) {
+            Text(msg)
+        }
 }
 
 @Composable
