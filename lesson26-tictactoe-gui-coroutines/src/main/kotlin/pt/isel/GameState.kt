@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import pt.isel.ttt.*
 import java.net.URI
 import java.net.URL
-import java.net.http.HttpClient.newHttpClient
+import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.net.http.HttpResponse.BodyHandlers
@@ -69,7 +69,9 @@ class GameState {
         }
     }
 
-    val httpClient = newHttpClient()
+    private val httpClient = HttpClient.newBuilder()
+        .followRedirects(HttpClient.Redirect.ALWAYS)
+        .build()
 
     /**
      * Non-blocking version!
@@ -82,6 +84,7 @@ class GameState {
         httpClient
             .sendAsync(request, BodyHandlers.ofString()) // Promise<HttpResponse>
             .thenApply(HttpResponse<String>::body)       // Promise<String>
+            .thenApply { JsonValueRegex.find(it)?.value }
             .thenAccept { chuckNorrisState.value = it }
     }
 }
