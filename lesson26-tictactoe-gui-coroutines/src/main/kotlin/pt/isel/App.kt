@@ -1,5 +1,7 @@
 package pt.isel
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Text
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.DpSize
@@ -22,7 +24,11 @@ fun main() = application {
          * Build GUI
          */
         TicTacToeMenu(game::startGame)
-        BoardView(game.board, game::play)
-        DialogMessage(game.message, game::dismissMessage)
+        Column {
+            StopWatchView(game.formattedTime)
+            BoardView(game.board, game::play)
+            DialogMessage(game.message, game::dismissMessage)
+            Text(game.chuckNorris ?: "")
+        }
     }
 }
