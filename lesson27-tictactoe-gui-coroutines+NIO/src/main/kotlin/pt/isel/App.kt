@@ -3,6 +3,7 @@ package pt.isel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.window.Window
@@ -19,7 +20,8 @@ fun main() = application {
             size = DpSize.Unspecified
         )
     ) {
-        val game = remember { GameState() }
+        val scope = rememberCoroutineScope()
+        val game = remember { GameState(scope) }
         /*
          * Build GUI
          */

@@ -12,7 +12,8 @@ repositories {
 dependencies {
     implementation(compose.desktop.currentOs)
     implementation(project(":lesson09-tictactoe-model"))
-
+    implementation("io.ktor:ktor-client-core:2.1.3")
+    implementation("io.ktor:ktor-client-cio:2.1.3")
 
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
