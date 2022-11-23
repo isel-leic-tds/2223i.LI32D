@@ -15,20 +15,20 @@ import java.net.http.HttpResponse
 import java.net.http.HttpResponse.BodyHandlers
 import kotlin.concurrent.thread
 
-class GameState(val scope: CoroutineScope) {
+class GameState(val scope: CoroutineScope, val storage: StorageAsync<String, Board>) {
     private val JsonValueRegex = """(?<=\"value\":\")[^\"]*""".toRegex()
-    private val boardState: MutableState<Board> = mutableStateOf(BoardRun())
+    private val gameState: MutableState<GameAsync?> = mutableStateOf(null)
     private val messageState: MutableState<String?> = mutableStateOf(null)
     private val stopWatch = StopWatch()
     private val chuckNorrisState = mutableStateOf<String?>(null)
 
-    val board get() = boardState.value
+    val board get() = gameState.value
     val message get() = messageState.value
     val formattedTime get() = stopWatch.formattedTime
     val chuckNorris get() = chuckNorrisState.value
 
-    fun startGame() {
-        boardState.value = BoardRun()
+    fun startGame(name: String) = scope.launch{
+        gameState.value = startGame(name, storage)
         stopWatch.reset()
         stopWatch.start()
     }
@@ -38,16 +38,26 @@ class GameState(val scope: CoroutineScope) {
     }
 
     fun play(pos: Position) {
-        val moves = boardState.value.moves
+        val (game, setGame) = gameState
+        if(game == null) {
+            messageState.value = "You should start a new Game before playing!"
+            return
+        }
+        val moves = game.board.moves
         val lastPlayer = if(moves.isEmpty()) Player.CIRCLE else moves.last().player
-        try {
-            scope.launch { requestChuckNorrisNioCoroutine() }
-            val newBoard = boardState.value.play(pos, lastPlayer.turn())
-            boardState.value = newBoard
-            messageState.value = boardMessage(newBoard)
-            if(message != null) stopWatch.pause()
-        } catch (ex: Exception) {
-            messageState.value = ex.message
+        scope.launch { requestChuckNorrisNioCoroutine() }
+        scope.launch {
+            try {
+                val newGame = game.play(storage, pos)
+                setGame(newGame)
+                messageState.value = boardMessage(newGame.board)
+                if(message != null) stopWatch.pause()
+            } catch (ex: Exception) {
+                messageState.value = ex.message
+                val newBoard = storage.load(game.name)
+                if(newBoard != null && newBoard.moves != game.board.moves)
+                    setGame(game.copy(board = newBoard))
+            }
         }
     }
     /**

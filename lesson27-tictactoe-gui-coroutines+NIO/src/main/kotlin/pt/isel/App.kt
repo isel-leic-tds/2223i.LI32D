@@ -10,6 +10,8 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
+import pt.isel.ttt.Board
+import pt.isel.ttt.BoardRun
 
 fun main() = application {
     Window(
@@ -21,16 +23,24 @@ fun main() = application {
         )
     ) {
         val scope = rememberCoroutineScope()
-        val game = remember { GameState(scope) }
+        val game = remember { GameState(
+            scope,
+            FileStorageAsync<String, Board>("out", { BoardRun() }, BoardSerializer)
+        )}
         /*
          * Build GUI
          */
         TicTacToeMenu(game::startGame)
         Column {
             StopWatchView(game.formattedTime)
-            BoardView(game.board, game::play)
+            BoardView(game.board?.board, game::play)
             DialogMessage(game.message, game::dismissMessage)
             Text(game.chuckNorris ?: "")
         }
     }
+}
+
+object BoardSerializer: StringSerializer<Board> {
+    override fun write(obj: Board) = obj.serialize()
+    override fun parse(input: String) =  Board.deserialize(input)
 }

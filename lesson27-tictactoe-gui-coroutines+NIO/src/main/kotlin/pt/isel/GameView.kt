@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,10 +23,18 @@ import kotlin.system.exitProcess
 
 
 @Composable
-fun FrameWindowScope.TicTacToeMenu(onNew: () -> Unit) {
+fun FrameWindowScope.TicTacToeMenu(onNew: (String) -> Unit) {
+    val (newGameDialog, setNewGameDialog) = remember { mutableStateOf(false) }
+    if(newGameDialog)
+        DialogInput({ name ->
+            onNew(name)
+            setNewGameDialog(false)
+        }) {
+            setNewGameDialog(false)
+        }
     MenuBar {
         Menu("TicTacToe", mnemonic = 'T') {
-            Item("New", onClick = onNew)
+            Item("New", onClick = { setNewGameDialog(true) })
             Item("Exit", onClick = { exitProcess(0) })
         }
     }
@@ -45,12 +55,12 @@ fun DialogMessage(msg: String?, onClose: () -> Unit) {
 }
 
 @Composable
-fun BoardView(board: Board, onCellClick: (Position) -> Unit) {
+fun BoardView(board: Board?, onCellClick: (Position) -> Unit) {
     Column {
         repeat(BOARD_SIZE) { line ->
             Row {
                 repeat(BOARD_SIZE) { col ->
-                    val move = board.moves.find { it.pos == Position(line, col) }
+                    val move = board?.moves?.find { it.pos == Position(line, col) }
                     val symbol = move?.player?.symbol ?: ' '
                     Cell(symbol.toString(), Position(line, col), onCellClick)
                 }
