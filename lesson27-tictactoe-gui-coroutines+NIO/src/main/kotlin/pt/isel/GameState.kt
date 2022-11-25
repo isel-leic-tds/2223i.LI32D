@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import pt.isel.ttt.*
 import java.net.URI
@@ -16,6 +18,7 @@ import java.net.http.HttpResponse.BodyHandlers
 import kotlin.concurrent.thread
 
 class GameState(val scope: CoroutineScope, val storage: StorageAsync<String, Board>) {
+    private var jobRefresh: Job? = null
     private val JsonValueRegex = """(?<=\"value\":\")[^\"]*""".toRegex()
     private val gameState: MutableState<GameAsync?> = mutableStateOf(null)
     private val messageState: MutableState<String?> = mutableStateOf(null)
@@ -27,10 +30,23 @@ class GameState(val scope: CoroutineScope, val storage: StorageAsync<String, Boa
     val formattedTime get() = stopWatch.formattedTime
     val chuckNorris get() = chuckNorrisState.value
 
-    fun startGame(name: String) = scope.launch{
-        gameState.value = startGame(name, storage)
-        stopWatch.reset()
-        stopWatch.start()
+    fun startGame(name: String) {
+        scope.launch {
+            gameState.value = startGame(name, storage)
+            stopWatch.reset()
+            stopWatch.start()
+            jobRefresh = scope.launch {
+                val (game, setGame) = gameState
+                if(game != null) {
+                    while(true) {
+                        delay(500)
+                        val newBoard = storage.load(game.name)
+                        if(newBoard != null && newBoard.moves != game.board.moves)
+                            setGame(game.copy(board = newBoard))
+                    }
+                }
+            }
+        }
     }
 
     fun dismissMessage() {
