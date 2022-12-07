@@ -1,5 +1,5 @@
 
-private class Student4(n: Int=0, id:String="") {
+private class Student3(n: Int=0, id:String="") {
     val number: Int = n
     val name: String = id
     init { print("Init -> ") }
@@ -7,8 +7,8 @@ private class Student4(n: Int=0, id:String="") {
 }
 
 fun main() {
-    Student4().println()
-    Student4(876245,"Barbosa Adolfo").println()
-    Student4(132345).println()
-    Student4(id = "Ana Paula").println()
+    Student3().println()
+    Student3(876245,"Barbosa Adolfo").println()
+    Student3(132345).println()
+    Student3(id = "Ana Paula").println()
 }

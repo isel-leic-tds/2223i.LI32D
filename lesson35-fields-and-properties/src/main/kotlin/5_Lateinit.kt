@@ -5,7 +5,7 @@ private class Z {
 
 fun main() {
     val z = Z()
-    //println(z.later)
+    //println(z.later) // UninitializedPropertyAccessException !!!!
     println(z.check())
     z.later = "Ok"
     println(z.later)

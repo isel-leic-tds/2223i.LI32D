@@ -9,6 +9,11 @@ private class Student1 {
         number = n
         name = id
     }
+    constructor(n: Int) {
+        print("C(n) -> ")
+        number = n
+        name = ""
+    }
     constructor() {
         print("C() -> ")
         number = 0
@@ -20,4 +25,5 @@ private class Student1 {
 fun main() {
     Student1().println()
     Student1(823486,"Ze Manel").println()
+    Student1(343242)
 }
